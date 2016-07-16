@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Server;
 
 namespace WithGUI
 {
@@ -19,9 +20,22 @@ namespace WithGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        StartServer server;
         public MainWindow()
         {
             InitializeComponent();
+            server = new StartServer();
+        }
+
+        private void start_Click(object sender, RoutedEventArgs e)
+        {
+            server.Start();
+            server.consl.newString += consl_newString;
+        }
+
+        void consl_newString(object sender, ConsoleArgs e)
+        {
+            Console.Items.Add(e.currentContent);
         }
     }
 }

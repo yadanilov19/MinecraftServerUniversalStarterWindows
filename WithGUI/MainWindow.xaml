@@ -8,9 +8,16 @@
             <RowDefinition Height="243*"/>
             <RowDefinition Height="41*"/>
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="1" />
-        <TextBox Grid.Row="2" Text="text"/>
-        <Menu Grid.Row="0" />
+        <ListBox x:Name="Console" Grid.Row="1" />
+        <TextBox x:Name="ConsoleTextField" Grid.Row="2" Text="text"/>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Server" Height="35">
+                <MenuItem x:Name="Start" Header="Start" Click="start_Click"/>
+                <MenuItem x:Name="Stop" Header="Stop"/>
+                <MenuItem x:Name="Restart" Header="Restart"/>
+            </MenuItem>
+            <MenuItem Header="ClearConsole"/>
+        </Menu>
 
     </Grid>
 </Window>

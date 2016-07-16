@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console.cs" />
+    <Compile Include="ConsoleArgs.cs" />
     <Compile Include="StartServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
