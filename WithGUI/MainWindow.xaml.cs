@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Server;
+using System.Threading;
 
 namespace WithGUI
 {
@@ -24,6 +25,7 @@ namespace WithGUI
         public MainWindow()
         {
             InitializeComponent();
+            Thread.CurrentThread.Name = "Main";
             server = new StartServer();
         }
 
@@ -36,6 +38,16 @@ namespace WithGUI
         void consl_newString(object sender, ConsoleArgs e)
         {
             Console.Items.Add(e.currentContent);
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            server.Stop();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            server.Stop();
         }
     }
 }
