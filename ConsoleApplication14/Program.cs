@@ -41,7 +41,7 @@ namespace ConsoleApplication14
                     {
                         FileName = "cmd.exe",
                         Verb = "Server_Minecraft_Process",
-                        CreateNoWindow = false,
+                        CreateNoWindow = true,
                         Arguments = "/c" + "\"" + Search_bat(),
                         UseShellExecute = false,
                         RedirectStandardError = true,
