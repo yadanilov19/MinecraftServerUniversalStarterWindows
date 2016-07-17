@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WithGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing">
+        Title="MainWindow" Height="500" Width="700" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -9,7 +9,7 @@
             <RowDefinition Height="41*"/>
         </Grid.RowDefinitions>
         <ListBox x:Name="ConsoleR" Grid.Row="1" />
-        <TextBox x:Name="ConsoleTextField" Grid.Row="2" Text="text"/>
+        <TextBox x:Name="ConsoleTextField" Grid.Row="2" Text="" GotFocus="ConsoleTextField_GotFocus" KeyDown="ConsoleTextField_KeyDown"/>
         <Menu Grid.Row="0">
             <MenuItem Header="Server" Height="35">
                 <MenuItem x:Name="Start" Header="Start" Click="start_Click"/>

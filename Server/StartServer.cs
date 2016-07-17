@@ -25,7 +25,7 @@ namespace Server
             if (tmp.Length != 1)
                 throw new Exception("НЕСКОЛЬКО/НИ ОДНОГО ФАЙЛОВ/А minecraft.jar В ДИРЕКТОРИИ С ПРОГРАММОЙ. УДАЛИТЕ ЛИШНИЕ. ДОЛЖЕН ОСТАТЬСЯ ОДИН jar file");
             else{
-                string tmpps = "java -Xmx1024M -Xms1024M -jar " + @tmp[0].Replace(Directory.GetCurrentDirectory(), "").Replace("\\","");// +"nogui";
+                string tmpps = "java -Xmx1024M -Xms1024M -jar " + @tmp[0].Replace(Directory.GetCurrentDirectory(), "").Replace("\\", "") + " nogui ";
                 return tmpps;
                 }
         }
@@ -41,7 +41,7 @@ namespace Server
                     {
                         FileName = "cmd.exe",
                         Verb = "Server_Minecraft_Process",
-                        CreateNoWindow = true,
+                        CreateNoWindow = false,
                         UseShellExecute = false,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
@@ -59,7 +59,7 @@ namespace Server
 
 
                 sr.AutoFlush = true;
-                sr.WriteLine("cd " + Directory.GetCurrentDirectory().Replace("\\","\""));
+                sr.WriteLine("cd " + Directory.GetCurrentDirectory());
                 sr.WriteLine(Search_server_jar());
                 sr.WriteLine("cls");
 
@@ -67,9 +67,6 @@ namespace Server
                 server.OutputDataReceived += server_OutputDataReceived;
                 server.ErrorDataReceived += server_OutputDataReceived;
 
-                //ab = server.StandardOutput.ReadToEnd();
-                //sr.Close();
-                //server.WaitForExit();
             }
             catch (Exception e)
             {
@@ -79,7 +76,15 @@ namespace Server
 
         void server_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            log(e.Data);
+            try
+            {
+                if (e.Data.Length > 0 && e.Data[0] == '[')
+                    log(e.Data);
+            }
+            catch (Exception f)
+            {
+
+            }
         }
 
         public void Stop()
@@ -88,8 +93,8 @@ namespace Server
                 return;
 
             server.Exited -= server_Exited;
-            server.WaitForExit();
-            server.Close();
+            server.Dispose();
+            server.Kill();
             GC.WaitForFullGCComplete();
             GC.Collect();
         }
@@ -98,6 +103,11 @@ namespace Server
         {
             Stop();
             Start();
+        }
+
+        public void SendCommand(string p)
+        {
+            server.StandardInput.WriteLine(p);
         }
     }
 }

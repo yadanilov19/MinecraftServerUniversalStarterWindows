@@ -25,13 +25,20 @@ namespace WithGUI
         public MainWindow()
         {
             InitializeComponent();
-            
+            ConsoleTextField.Text = WithGUI.Properties.Resources.StringDefault;
             server = new StartServer(new StartServer.ConsoleLog(ConsoleLogServer));
         }
 
         void ConsoleLogServer(string mess)
         {
-            Dispatcher.BeginInvoke(new Action(() => { ConsoleR.Items.Add(mess); }));
+            Dispatcher.BeginInvoke(new Action(() => {
+                if (ConsoleR.Items.Count > 1000)
+                    for (int i = 0; i < 800; ++i)
+                        ConsoleR.Items.RemoveAt(0);
+
+                        ConsoleR.Items.Add(mess);
+                ConsoleR.ScrollIntoView(mess);
+            }));
         }
 
         private void start_Click(object sender, RoutedEventArgs e)
@@ -49,5 +56,25 @@ namespace WithGUI
             server.Stop();
             this.Close();
         }
+
+        private void ConsoleTextField_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+            if ((sender as TextBox).Text == WithGUI.Properties.Resources.StringDefault)
+            {
+                (sender as TextBox).Text = "";
+                return;
+            }
+        }
+
+        private void ConsoleTextField_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ConsoleR.Items.Add("{Command from This Host Process}[]: " + ConsoleTextField.Text);
+                server.SendCommand(ConsoleTextField.Text);
+            }
+        }
+
     }
 }
