@@ -16,7 +16,7 @@
                 <MenuItem x:Name="Stop" Header="Stop" Click="Stop_Click"/>
                 <MenuItem x:Name="Restart" Header="Restart"/>
             </MenuItem>
-            <MenuItem Header="Options" Height="35"/>
+            <MenuItem Header="Options" Height="35" Click="MenuItem_Click"/>
         </Menu>
 
     </Grid>

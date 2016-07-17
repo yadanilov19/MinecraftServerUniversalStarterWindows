@@ -54,7 +54,6 @@ namespace WithGUI
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             server.Stop();
-            this.Close();
         }
 
         private void ConsoleTextField_GotFocus(object sender, RoutedEventArgs e)
@@ -74,6 +73,11 @@ namespace WithGUI
                 ConsoleR.Items.Add("{Command from This Host Process}[]: " + ConsoleTextField.Text);
                 server.SendCommand(ConsoleTextField.Text);
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            (new Options()).Show();
         }
 
     }

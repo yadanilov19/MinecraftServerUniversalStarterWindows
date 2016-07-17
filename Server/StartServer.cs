@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+
 namespace Server
 {
     public class StartServer
@@ -14,9 +15,15 @@ namespace Server
         string fileName = @"minecraft*.jar";
         public delegate void ConsoleLog(string message);
         ConsoleLog log;
+ 
         public StartServer(ConsoleLog _log)
         {
             log = _log;
+            DeserializePropFile();
+        }
+
+        private void DeserializePropFile()
+        {
         }
         private string Search_server_jar()
         {
@@ -25,7 +32,7 @@ namespace Server
             if (tmp.Length != 1)
                 throw new Exception("НЕСКОЛЬКО/НИ ОДНОГО ФАЙЛОВ/А minecraft.jar В ДИРЕКТОРИИ С ПРОГРАММОЙ. УДАЛИТЕ ЛИШНИЕ. ДОЛЖЕН ОСТАТЬСЯ ОДИН jar file");
             else{
-                string tmpps = "java -Xmx1024M -Xms1024M -jar " + @tmp[0].Replace(Directory.GetCurrentDirectory(), "").Replace("\\", "") + " nogui ";
+                string tmpps = "java -Xmx" + PropertiesServer.heapSize + "M -Xms" + PropertiesServer.heapSize + "M -jar " + @tmp[0].Replace(Directory.GetCurrentDirectory(), "").Replace("\\", "") + " nogui ";
                 return tmpps;
                 }
         }
@@ -40,13 +47,11 @@ namespace Server
                     StartInfo = new ProcessStartInfo()
                     {
                         FileName = "cmd.exe",
-                        Verb = "Server_Minecraft_Process",
-                        CreateNoWindow = false,
+                        CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
-                        RedirectStandardInput = true,
-                        WorkingDirectory = Directory.GetCurrentDirectory()
+                        RedirectStandardInput = true
                     },
                     EnableRaisingEvents = true,
                 };
@@ -61,7 +66,6 @@ namespace Server
                 sr.AutoFlush = true;
                 sr.WriteLine("cd " + Directory.GetCurrentDirectory());
                 sr.WriteLine(Search_server_jar());
-                sr.WriteLine("cls");
 
 
                 server.OutputDataReceived += server_OutputDataReceived;
@@ -93,8 +97,9 @@ namespace Server
                 return;
 
             server.Exited -= server_Exited;
-            server.Dispose();
+            server.StandardInput.WriteLine("stop");
             server.Kill();
+            server = null;
             GC.WaitForFullGCComplete();
             GC.Collect();
         }
