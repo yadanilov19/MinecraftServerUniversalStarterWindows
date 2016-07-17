@@ -5,22 +5,29 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using System.Windows.Forms;
 namespace Server
 {
     public class StartServer
     {
         Process server;
-        public Console consl;
-        string fileName = @"start.bat";
-        private string Search_bat()
+        string fileName = @"minecraft*.jar";
+        public delegate void ConsoleLog(string message);
+        ConsoleLog log;
+        public StartServer(ConsoleLog _log)
+        {
+            log = _log;
+        }
+        private string Search_server_jar()
         {
             //return "java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui";
             var tmp = Directory.GetFiles(Directory.GetCurrentDirectory(), fileName);
             if (tmp.Length != 1)
-                throw new Exception("НЕСКОЛЬКО/НИ ОДНОГО ФАЙЛОВ/А START.BAT В ДИРЕКТОРИИ С ПРОГРАММОЙ. УДАЛИТЕ ЛИШНИЕ. ДОЛЖЕН ОСТАТЬСЯ ОДИН БАТНИК");
-            else
-                return @tmp[0];
+                throw new Exception("НЕСКОЛЬКО/НИ ОДНОГО ФАЙЛОВ/А minecraft.jar В ДИРЕКТОРИИ С ПРОГРАММОЙ. УДАЛИТЕ ЛИШНИЕ. ДОЛЖЕН ОСТАТЬСЯ ОДИН jar file");
+            else{
+                string tmpps = "java -Xmx1024M -Xms1024M -jar " + @tmp[0].Replace(Directory.GetCurrentDirectory(), "").Replace("\\","");// +"nogui";
+                return tmpps;
+                }
         }
 
         public void Start()
@@ -34,7 +41,7 @@ namespace Server
                     {
                         FileName = "cmd.exe",
                         Verb = "Server_Minecraft_Process",
-                        CreateNoWindow = false,
+                        CreateNoWindow = true,
                         UseShellExecute = false,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
@@ -43,21 +50,36 @@ namespace Server
                     },
                     EnableRaisingEvents = true,
                 };
-
                 server.Exited += server_Exited;
-                consl = new Console(server);
                 server.Start();
 
+
+                server.BeginOutputReadLine();
                 StreamWriter sr = server.StandardInput;
-                sr.WriteLine(Directory.GetCurrentDirectory());
-                sr.WriteLine(fileName);
-                sr.Close();
+
+
+                sr.AutoFlush = true;
+                sr.WriteLine("cd " + Directory.GetCurrentDirectory().Replace("\\","\""));
+                sr.WriteLine(Search_server_jar());
+                sr.WriteLine("cls");
+
+
+                server.OutputDataReceived += server_OutputDataReceived;
+                server.ErrorDataReceived += server_OutputDataReceived;
+
+                //ab = server.StandardOutput.ReadToEnd();
+                //sr.Close();
                 //server.WaitForExit();
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message + "   ;   " + e.InnerException.Message);
             }
+        }
+
+        void server_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            log(e.Data);
         }
 
         public void Stop()

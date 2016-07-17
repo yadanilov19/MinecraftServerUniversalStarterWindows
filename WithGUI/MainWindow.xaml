@@ -8,7 +8,7 @@
             <RowDefinition Height="243*"/>
             <RowDefinition Height="41*"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="Console" Grid.Row="1" />
+        <ListBox x:Name="ConsoleR" Grid.Row="1" />
         <TextBox x:Name="ConsoleTextField" Grid.Row="2" Text="text"/>
         <Menu Grid.Row="0">
             <MenuItem Header="Server" Height="35">
@@ -16,7 +16,7 @@
                 <MenuItem x:Name="Stop" Header="Stop" Click="Stop_Click"/>
                 <MenuItem x:Name="Restart" Header="Restart"/>
             </MenuItem>
-            <MenuItem Header="ClearConsole"/>
+            <MenuItem Header="Options" Height="35"/>
         </Menu>
 
     </Grid>

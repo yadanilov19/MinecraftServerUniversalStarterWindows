@@ -25,21 +25,20 @@ namespace WithGUI
         public MainWindow()
         {
             InitializeComponent();
-            Thread.CurrentThread.Name = "Main";
-            server = new StartServer();
+            
+            server = new StartServer(new StartServer.ConsoleLog(ConsoleLogServer));
+        }
+
+        void ConsoleLogServer(string mess)
+        {
+            Dispatcher.BeginInvoke(new Action(() => { ConsoleR.Items.Add(mess); }));
         }
 
         private void start_Click(object sender, RoutedEventArgs e)
         {
             server.Start();
-            server.consl.newString += consl_newString;
         }
-
-        void consl_newString(object sender, ConsoleArgs e)
-        {
-            Console.Items.Add(e.currentContent);
-        }
-
+        
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
             server.Stop();
@@ -48,6 +47,7 @@ namespace WithGUI
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             server.Stop();
+            this.Close();
         }
     }
 }
